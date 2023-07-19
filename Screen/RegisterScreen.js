@@ -1,288 +1,206 @@
-// Example of Splash, Login and Sign Up in React Native
-// https://aboutreact.com/react-native-login-and-signup/
+import * as ImagePicker from "expo-image-picker";
+import { Formik } from "formik";
+import React, { useState } from "react";
+import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import * as Yup from "yup";
 
-// Import React and Component
-import React, {createRef, useState} from 'react';
-import {
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+const RegisterSchema = Yup.object().shape({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+  location: Yup.string().required("Location is required"),
+  occupation: Yup.string().required("Occupation is required"),
+  picture: Yup.string(),
+});
 
-import Loader from './Components/Loader';
+const RegisterScreen = ({ navigation }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
 
-const RegisterScreen = props => {
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [userAge, setUserAge] = useState('');
-  const [userAddress, setUserAddress] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState('');
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-  const emailInputRef = createRef();
-  const ageInputRef = createRef();
-  const addressInputRef = createRef();
-  const passwordInputRef = createRef();
-
-  const handleSubmitButton = () => {
-    setErrortext('');
-    if (!userName) {
-      alert('Please fill Name');
-      return;
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
     }
-    if (!userEmail) {
-      alert('Please fill Email');
-      return;
-    }
-    if (!userAge) {
-      alert('Please fill Age');
-      return;
-    }
-    if (!userAddress) {
-      alert('Please fill Address');
-      return;
-    }
-    if (!userPassword) {
-      alert('Please fill Password');
-      return;
-    }
-    //Show Loader
-    setLoading(true);
-    var dataToSend = {
-      name: userName,
-      email: userEmail,
-      age: userAge,
-      address: userAddress,
-      password: userPassword,
-    };
-    var formBody = [];
-    for (var key in dataToSend) {
-      var encodedKey = encodeURIComponent(key);
-      var encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-
-    fetch('http://localhost:3000/api/user/register', {
-      method: 'POST',
-      body: formBody,
-      headers: {
-        //Header Defination
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        //Hide Loader
-        setLoading(false);
-        console.log(responseJson);
-        // If server response message same as Data Matched
-        if (responseJson.status === 'success') {
-          setIsRegistraionSuccess(true);
-          console.log('Registration Successful. Please Login to proceed');
-        } else {
-          setErrortext(responseJson.msg);
-        }
-      })
-      .catch(error => {
-        //Hide Loader
-        setLoading(false);
-        console.error(error);
-      });
   };
-  if (isRegistraionSuccess) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#307ecc',
-          justifyContent: 'center',
-        }}>
-        <Image
-          source={require('../Image/success.png')}
-          style={{
-            height: 150,
-            resizeMode: 'contain',
-            alignSelf: 'center',
-          }}
-        />
-        <Text style={styles.successTextStyle}>Registration Successful</Text>
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          activeOpacity={0.5}
-          onPress={() => props.navigation.navigate('LoginScreen')}>
-          <Text style={styles.buttonTextStyle}>Login Now</Text>
-        </TouchableOpacity>
-      </View>
+
+  const register = async (values, onSubmitProps) => {
+    const formData = new FormData();
+    for (let value in values) {
+      formData.append(value, values[value]);
+    }
+    formData.append(
+      "picturePath",
+      values.picture ? values.picture.name : "empty.jpeg"
     );
-  }
+
+    const savedUserResponse = await fetch(
+      `http://localhost:3001/auth/register`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const savedUser = await savedUserResponse.json();
+    onSubmitProps.resetForm();
+
+    if (savedUser) {
+      alert("Registration successful. Log in to enter.");
+      navigation.navigate("LoginScreen");
+    } else {
+      alert("Registration failed. Please try again.");
+    }
+  };
+
   return (
-    <View style={{flex: 1, backgroundColor: '#307ecc'}}>
-      <Loader loading={loading} />
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
-        <View style={{alignItems: 'center'}}>
-          <Image
-            source={require('../Image/aboutreact.png')}
-            style={{
-              width: '50%',
-              height: 100,
-              resizeMode: 'contain',
-              margin: 30,
-            }}
-          />
-        </View>
-        <KeyboardAvoidingView enabled>
-          <View style={styles.SectionStyle}>
+    <View style={styles.container}>
+      <Formik
+        initialValues={{
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          location: "",
+          occupation: "",
+          picture: "",
+        }}
+        validationSchema={RegisterSchema}
+        onSubmit={register}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View>
+            {errors.firstName && touched.firstName && (
+              <Text style={styles.error}>{errors.firstName}</Text>
+            )}
             <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserName => setUserName(UserName)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Name"
-              placeholderTextColor="#8b9cb5"
-              autoCapitalize="sentences"
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                emailInputRef.current && emailInputRef.current.focus()
-              }
-              blurOnSubmit={false}
+              onChangeText={handleChange("firstName")}
+              onBlur={handleBlur("firstName")}
+              value={values.firstName}
+              placeholder="First Name"
+              style={styles.input}
+              autoCapitalize="words"
+              autoCompleteType="off"
             />
-          </View>
-          <View style={styles.SectionStyle}>
+            {errors.lastName && touched.lastName && (
+              <Text style={styles.error}>{errors.lastName}</Text>
+            )}
             <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserEmail => setUserEmail(UserEmail)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Email"
-              placeholderTextColor="#8b9cb5"
-              keyboardType="email-address"
-              ref={emailInputRef}
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                passwordInputRef.current && passwordInputRef.current.focus()
-              }
-              blurOnSubmit={false}
+              onChangeText={handleChange("lastName")}
+              onBlur={handleBlur("lastName")}
+              value={values.lastName}
+              placeholder="Last Name"
+              style={styles.input}
+              autoCapitalize="words"
+              autoCompleteType="off"
             />
-          </View>
-          <View style={styles.SectionStyle}>
+            {errors.email && touched.email && (
+              <Text style={styles.error}>{errors.email}</Text>
+            )}
             <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserPassword => setUserPassword(UserPassword)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Password"
-              placeholderTextColor="#8b9cb5"
-              ref={passwordInputRef}
-              returnKeyType="next"
-              secureTextEntry={true}
-              onSubmitEditing={() =>
-                ageInputRef.current && ageInputRef.current.focus()
-              }
-              blurOnSubmit={false}
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+              placeholder="Email Address"
+              style={styles.input}
+              autoCapitalize="none"
+              autoCompleteType="off"
             />
-          </View>
-          <View style={styles.SectionStyle}>
+            {errors.password && touched.password && (
+              <Text style={styles.error}>{errors.password}</Text>
+            )}
             <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserAge => setUserAge(UserAge)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Age"
-              placeholderTextColor="#8b9cb5"
-              keyboardType="numeric"
-              ref={ageInputRef}
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                addressInputRef.current && addressInputRef.current.focus()
-              }
-              blurOnSubmit={false}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+              placeholder="Password"
+              style={styles.input}
+              secureTextEntry
             />
-          </View>
-          <View style={styles.SectionStyle}>
+            {errors.location && touched.location && (
+              <Text style={styles.error}>{errors.location}</Text>
+            )}
             <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserAddress => setUserAddress(UserAddress)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Address"
-              placeholderTextColor="#8b9cb5"
-              autoCapitalize="sentences"
-              ref={addressInputRef}
-              returnKeyType="next"
-              onSubmitEditing={Keyboard.dismiss}
-              blurOnSubmit={false}
+              onChangeText={handleChange("location")}
+              onBlur={handleBlur("location")}
+              value={values.location}
+              placeholder="Location"
+              style={styles.input}
+              autoCapitalize="words"
+              autoCompleteType="off"
             />
+            {errors.occupation && touched.occupation && (
+              <Text style={styles.error}>{errors.occupation}</Text>
+            )}
+            <TextInput
+              onChangeText={handleChange("occupation")}
+              onBlur={handleBlur("occupation")}
+              value={values.occupation}
+              placeholder="Occupation"
+              style={styles.input}
+              autoCapitalize="words"
+              autoCompleteType="off"
+            />
+            {errors.picture && touched.picture && (
+              <Text style={styles.error}>{errors.picture}</Text>
+            )}
+            <TextInput
+              onChangeText={handleChange("picture")}
+              onBlur={handleBlur("picture")}
+              value={values.picture}
+              placeholder="Leave this empty for now"
+              style={styles.input}
+              autoCapitalize="none"
+              autoCompleteType="off"
+            />
+            <Button title="Pick an image from gallery" onPress={pickImage} />
+            {selectedImage && (
+              <Image
+                source={{ uri: selectedImage }}
+                style={{ width: 50, height: 50 }}
+              />
+            )}
+            {errors.picture && touched.picture && (
+              <Text style={styles.error}>{errors.picture}</Text>
+            )}
+            <Button onPress={handleSubmit} title="Register" />
           </View>
-          {errortext != '' ? (
-            <Text style={styles.errorTextStyle}>{errortext}</Text>
-          ) : null}
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            activeOpacity={0.5}
-            onPress={handleSubmitButton}>
-            <Text style={styles.buttonTextStyle}>REGISTER</Text>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        )}
+      </Formik>
     </View>
   );
 };
+
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
-  SectionStyle: {
-    flexDirection: 'row',
-    height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
-  },
-  buttonStyle: {
-    backgroundColor: '#7DE24E',
-    borderWidth: 0,
-    color: '#FFFFFF',
-    borderColor: '#7DE24E',
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 30,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  buttonTextStyle: {
-    color: '#FFFFFF',
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  inputStyle: {
+  container: {
     flex: 1,
-    color: 'white',
-    paddingLeft: 15,
-    paddingRight: 15,
+    justifyContent: "center",
+    padding: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#dadae8',
+    marginBottom: 20,
+    padding: 10,
   },
-  errorTextStyle: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  successTextStyle: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18,
-    padding: 30,
+  error: {
+    color: "red",
   },
 });

@@ -1,232 +1,109 @@
-// Example of Splash, Login and Sign Up in React Native
-// https://aboutreact.com/react-native-login-and-signup/
+import { Formik } from "formik";
+import React from "react";
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import * as Yup from "yup";
 
-// Import React and Component
-import React, { createRef, useState } from "react";
-import {
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+//TODO reset from when chnaging page
 
-// import AsyncStorage from '@react-native-community/async-storage';
-// import {AsyncStorage} from '@react-native-async-storage/async-storage';
-
-import Loader from "./Components/Loader";
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().required("Required"),
+});
 
 const LoginScreen = ({ navigation }) => {
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState("");
-
-  const passwordInputRef = createRef();
-
-  const login = async () => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail, password: userPassword }),
-    });
-    const loggedIn = await loggedInResponse.json();
-    console.log(loggedIn);
-
-    if (loggedIn && loggedIn.msg !== "User not found") {
-      console.log("Login Success");
-      navigation.replace("DrawerNavigationRoutes"); // add validation
-    } else {
-      setErrortext("Incorrect email or password");
-    }
-  };
-
-  const handleSubmitPress = () => {
-    setErrortext("");
-    if (!userEmail) {
-      alert("Please fill Email");
-      return;
-    }
-    if (!userPassword) {
-      alert("Please fill Password");
-      return;
-    }
-    setLoading(true);
-    let dataToSend = { email: userEmail, password: userPassword };
-    let formBody = [];
-    for (let key in dataToSend) {
-      let encodedKey = encodeURIComponent(key);
-      let encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch("http://localhost:3000/api/user/login", {
-      method: "POST",
-      body: formBody,
-      headers: {
-        //Header Defination
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        //Hide Loader
-        setLoading(false);
-        console.log(responseJson);
-        // If server response message same as Data Matched
-        if (responseJson.status === "success") {
-          //   AsyncStorage.setItem('user_id', responseJson.data.email);
-          console.log(responseJson.data.email);
-          navigation.replace("DrawerNavigationRoutes");
-        } else {
-          setErrortext(responseJson.msg);
-          console.log("Please check your email id or password");
-        }
-      })
-      .catch((error) => {
-        //Hide Loader
-        setLoading(false);
-        console.error(error);
+  const handleSubmit = async (values, actions) => {
+    const { email, password } = values;
+    try {
+      const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
+      const loggedIn = await loggedInResponse.json();
+      if (loggedIn && loggedIn.msg !== "User not found") {
+        navigation.replace("DrawerNavigationRoutes");
+      } else {
+        actions.setFieldError("general", "Incorrect email or password");
+      }
+    } catch (error) {
+      actions.setFieldError("general", error.message);
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
 
   return (
-    <View style={styles.mainBody}>
-      <Loader loading={loading} />
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: "center",
-          alignContent: "center",
-        }}
+    <View style={styles.container}>
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={LoginSchema}
+        onSubmit={handleSubmit}
       >
-        <View>
-          <KeyboardAvoidingView enabled>
-            <View style={{ alignItems: "center" }}>
-              <Image
-                source={require("../Image/aboutreact.png")}
-                style={{
-                  width: "50%",
-                  height: 100,
-                  resizeMode: "contain",
-                  margin: 30,
-                }}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current && passwordInputRef.current.focus()
-                }
-                underlineColorAndroid="#f000"
-                blurOnSubmit={false}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                placeholder="Enter Password" //12345
-                placeholderTextColor="#8b9cb5"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
-              />
-            </View>
-            {errortext != "" ? (
-              <Text style={styles.errorTextStyle}>{errortext}</Text>
-            ) : null}
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={login}
-            >
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
-            </TouchableOpacity>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View>
+            {errors.email && touched.email && (
+              <Text style={styles.error}>{errors.email}</Text>
+            )}
+            <TextInput
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+              placeholder="Email Address"
+              style={styles.input}
+              autoCapitalize="none"
+              autoCompleteType="off"
+            />
+            {errors.password && touched.password && (
+              <Text style={styles.error}>{errors.password}</Text>
+            )}
+            <TextInput
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+              placeholder="Password"
+              style={styles.input}
+              secureTextEntry
+            />
+            <Button onPress={handleSubmit} title="Submit" />
+            {errors.general && (
+              <Text style={styles.error}>{errors.general}</Text>
+            )}
             <Text
               style={styles.registerTextStyle}
               onPress={() => navigation.navigate("RegisterScreen")}
             >
               New Here ? Register
             </Text>
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
+
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  mainBody: {
+  container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#307ecc",
-    alignContent: "center",
+    padding: 20,
   },
-  SectionStyle: {
-    flexDirection: "row",
-    height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
-  },
-  buttonStyle: {
-    backgroundColor: "#7DE24E",
-    borderWidth: 0,
-    color: "#FFFFFF",
-    borderColor: "#7DE24E",
-    height: 40,
-    alignItems: "center",
-    borderRadius: 30,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-  },
-  buttonTextStyle: {
-    color: "#FFFFFF",
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  inputStyle: {
-    flex: 1,
-    color: "white",
-    paddingLeft: 15,
-    paddingRight: 15,
+  input: {
+    height: 50,
+    borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 30,
-    borderColor: "#dadae8",
-  },
-  registerTextStyle: {
-    color: "#FFFFFF",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 14,
-    alignSelf: "center",
+    marginBottom: 20,
     padding: 10,
   },
-  errorTextStyle: {
+  error: {
     color: "red",
-    textAlign: "center",
-    fontSize: 14,
   },
 });
