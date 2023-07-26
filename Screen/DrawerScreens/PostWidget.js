@@ -20,7 +20,6 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../../State";
-import CustomText from "../Components/CustomText.js";
 
 const PostWidget = ({
   postId,
