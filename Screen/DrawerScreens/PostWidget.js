@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import {
   Image,
+  Share,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  Avatar,
+  Button,
+  Card,
+  IconButton,
+  Surface,
+  // Text,
+  useTheme,
+} from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../../State";
+import CustomText from "../Components/CustomText.js";
 
 const PostWidget = ({
   postId,
@@ -28,6 +40,7 @@ const PostWidget = ({
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
   const [commentBoxText, setCommentBoxText] = useState("");
+  const theme = useTheme();
 
   const patchLike = async () => {
     const response = await fetch(
@@ -67,25 +80,73 @@ const PostWidget = ({
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
+    <Card
+      style={{
+        padding: 18,
+        backgroundColor: theme.colors.surface,
+        borderRadius: 12,
+        marginVertical: 9,
+        marginHorizontal: 14,
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Image
-          style={styles.userPicture}
+          style={{
+            width: 55,
+            height: 55,
+            borderRadius: 27.5,
+            marginRight: 13,
+          }}
           source={{
             uri:
               `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
               `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
           }}
         />
-        <View style={styles.headerText}>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.location}>{location}</Text>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 19,
+              marginBottom: 5,
+              marginTop: -5,
+              color: theme.colors.textPrimary,
+            }}
+          >
+            {name}
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              fontSize: 14,
+            }}
+          >
+            {location}
+          </Text>
         </View>
       </View>
-      <Text style={styles.description}>{description}</Text>
+      <Text
+        style={{
+          color: theme.colors.textPrimary,
+          marginVertical: 16,
+          fontSize: 15.5,
+        }}
+      >
+        {description}
+      </Text>
       {picturePath && (
         <Image
-          style={styles.picture}
+          style={{
+            width: "100%",
+            height: 200,
+            resizeMode: "cover",
+            marginBottom: 10,
+            borderRadius: 12,
+          }}
           source={{
             uri:
               `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
@@ -93,15 +154,65 @@ const PostWidget = ({
           }}
         />
       )}
-      <View style={styles.cardFooter}>
-        <TouchableOpacity onPress={patchLike}>
-          <Text style={styles.like}>{isLiked ? "Liked" : "Like"}</Text>
-        </TouchableOpacity>
-        <Text style={styles.likeCount}>{likeCount}</Text>
-        <TouchableOpacity onPress={() => setIsComments(!isComments)}>
-          <Text style={styles.comment}>Comments</Text>
-        </TouchableOpacity>
-        <Text style={styles.commentCount}>{comments && comments.length}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: theme.colors.surface,
+        }}
+      >
+        <IconButton
+          icon={isLiked ? "cards-heart" : "cards-heart-outline"}
+          iconColor={isLiked ? theme.colors.primary : theme.colors.textPrimary}
+          onPress={patchLike}
+          style={{
+            marginVertical: -4,
+          }}
+          size={22}
+        ></IconButton>
+        <Text
+          style={{
+            color: theme.colors.textPrimary,
+            marginRight: 10,
+            fontSize: 18,
+          }}
+        >
+          {likeCount}
+        </Text>
+        <IconButton
+          icon="comment-outline"
+          iconColor={theme.colors.textPrimary}
+          onPress={() => setIsComments(!isComments)}
+          style={{
+            marginVertical: -4,
+          }}
+          size={21}
+        ></IconButton>
+        <Text
+          style={{
+            color: theme.colors.textPrimary,
+            marginRight: 10,
+            fontSize: 18,
+            flex: 1,
+          }}
+        >
+          {comments && comments.length}
+        </Text>
+        <IconButton
+          icon="share-variant-outline"
+          iconColor={theme.colors.textPrimary}
+          onPress={() =>
+            Share.share({
+              message: `Check out this post on ExpressSocial: ${description}`,
+              // url: `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}`,
+              title: "ExpressSocial Post",
+            })
+          }
+          style={{
+            marginVertical: -4,
+          }}
+          size={22}
+        ></IconButton>
       </View>
       {isComments && (
         <View style={styles.commentSection}>
@@ -138,7 +249,7 @@ const PostWidget = ({
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </Card>
   );
 };
 

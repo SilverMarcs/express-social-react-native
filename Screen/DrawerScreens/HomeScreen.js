@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
+import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../../State";
 import PostWidget from "./PostWidget";
@@ -8,6 +9,7 @@ const HomeScreen = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
+  const theme = useTheme();
 
   const getPosts = async () => {
     const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`, {
@@ -23,7 +25,10 @@ const HomeScreen = ({ userId, isProfile = false }) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 70 }}>
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: 70 }}
+      style={{ backgroundColor: theme.colors.background }}
+    >
       <SafeAreaView>
         {posts.map(
           ({
