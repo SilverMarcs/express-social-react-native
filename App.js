@@ -2,7 +2,6 @@ import "react-native-gesture-handler";
 
 import React from "react";
 
-// import { Provider } from "react-redux";
 import store from "./State/store.js";
 
 // Import Navigators from React Navigation
@@ -18,8 +17,6 @@ import RegisterScreen from "./Screen/RegisterScreen";
 import { Provider } from "react-redux";
 
 import { PaperProvider } from "react-native-paper";
-// import TabNavigatorRoutes from "./Screen/TabNavigator.js";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabNavigator from "./Screen/TabNavigator.js";
 import { themeSettings } from "./Theme/index.js";
 

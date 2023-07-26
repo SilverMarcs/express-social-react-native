@@ -1,49 +1,63 @@
 import React from "react";
-import { SafeAreaView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { Button, Divider, List, useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogout } from "../../State";
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
+  const handleLogout = () => {
+    // dispatch(setLogout()); // TODO: fix this
+    navigation.replace("Auth");
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, padding: 16 }}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              textAlign: "center",
-              marginBottom: 16,
-            }}
-          >
-            Example of Splash, Login and Sign Up in React Native
-            {"\n\n"}
-            This is the Settings Screen
-          </Text>
-        </View>
-        <Text
-          style={{
-            fontSize: 18,
-            textAlign: "center",
-            color: "grey",
-          }}
-        >
-          Splash, Login and Register Example{"\n"}React Native
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            textAlign: "center",
-            color: "grey",
-          }}
-        >
-          www.aboutreact.com
-        </Text>
-      </View>
-    </SafeAreaView>
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+      <ScrollView>
+        <List.Item
+          title="Profile"
+          titleStyle={{ color: theme.colors.textPrimary }}
+          left={(props) => <List.Icon {...props} icon="account" />}
+        />
+        <Divider />
+        <List.Item
+          title="Notifications"
+          titleStyle={{ color: theme.colors.textPrimary }}
+          left={(props) => <List.Icon {...props} icon="bell-outline" />}
+        />
+        <Divider />
+        <List.Item
+          title="Privacy"
+          titleStyle={{ color: theme.colors.textPrimary }}
+          left={(props) => <List.Icon {...props} icon="lock-outline" />}
+        />
+        <Divider />
+        <List.Item
+          title="Language"
+          titleStyle={{ color: theme.colors.textPrimary }}
+          left={(props) => <List.Icon {...props} icon="web" />}
+        />
+        <Divider />
+        <List.Item
+          title="Help"
+          titleStyle={{ color: theme.colors.textPrimary }}
+          left={(props) => <List.Icon {...props} icon="help-circle-outline" />}
+        />
+      </ScrollView>
+      <Button
+        mode="outlined"
+        onPress={handleLogout}
+        style={{
+          // backgroundColor: theme.colors.primary,
+          margin: 20,
+        }}
+      >
+        Logout
+      </Button>
+    </View>
   );
 };
 
