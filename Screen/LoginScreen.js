@@ -12,10 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { setLogin } from "../State";
 
-// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
-
-//TODO reset from when chnaging page
-
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required"),

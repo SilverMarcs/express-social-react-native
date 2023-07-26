@@ -1,4 +1,3 @@
-// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
 import React, { useState } from "react";
 import {
   Image,
@@ -73,7 +72,9 @@ const PostWidget = ({
         <Image
           style={styles.userPicture}
           source={{
-            uri: `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}`,
+            uri:
+              `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
+              `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
           }}
         />
         <View style={styles.headerText}>
@@ -86,7 +87,9 @@ const PostWidget = ({
         <Image
           style={styles.picture}
           source={{
-            uri: `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}`,
+            uri:
+              `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
+              `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
           }}
         />
       )}
@@ -107,7 +110,9 @@ const PostWidget = ({
               <Image
                 style={styles.commenterPicture}
                 source={{
-                  uri: `${process.env.EXPO_PUBLIC_API_URL}/assets/${comment.commenterPicturePath}`,
+                  uri:
+                    `${process.env.EXPO_PUBLIC_API_URL}/assets/${comment.userPicturePath}` ??
+                    `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
                 }}
               />
               <View style={styles.commentText}>

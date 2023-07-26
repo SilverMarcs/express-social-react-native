@@ -1,4 +1,3 @@
-// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
 import React, { useState } from "react";

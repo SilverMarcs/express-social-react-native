@@ -1,11 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { FlatList, SafeAreaView, Text, View } from "react-native";
-// // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-// import { useDispatch, useSelector } from "react-redux";
-// import { setPosts } from "../../State";
-// import PostWidget from "./PostWidget";
-
-// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
 import { useEffect } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +23,7 @@ const HomeScreen = ({ userId, isProfile = false }) => {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ paddingBottom: 70 }}>
       <SafeAreaView>
         {posts.map(
           ({
