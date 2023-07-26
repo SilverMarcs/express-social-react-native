@@ -1,3 +1,4 @@
+// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
 import React, { useState } from "react";
@@ -43,7 +44,7 @@ const RegisterScreen = ({ navigation }) => {
     );
 
     const savedUserResponse = await fetch(
-      `http://localhost:3001/auth/register`,
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
       {
         method: "POST",
         body: formData,

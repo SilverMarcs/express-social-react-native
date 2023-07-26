@@ -1,7 +1,18 @@
 import { Formik } from "formik";
 import React from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
+import { setLogin } from "../State";
+
+// import { EXPO_PUBLIC_API_URL, env, process } from "@env";
 
 //TODO reset from when chnaging page
 
@@ -11,16 +22,28 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   const handleSubmit = async (values, actions) => {
     const { email, password } = values;
     try {
-      const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const loggedInResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
       const loggedIn = await loggedInResponse.json();
       if (loggedIn && loggedIn.msg !== "User not found") {
+        dispatch(
+          // sending payload to the state. see reference
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
         navigation.replace("DrawerNavigationRoutes");
       } else {
         actions.setFieldError("general", "Incorrect email or password");
@@ -29,6 +52,7 @@ const LoginScreen = ({ navigation }) => {
       actions.setFieldError("general", error.message);
     } finally {
       actions.setSubmitting(false);
+      Keyboard.dismiss();
     }
   };
 
@@ -71,7 +95,7 @@ const LoginScreen = ({ navigation }) => {
               style={styles.input}
               secureTextEntry
             />
-            <Button onPress={handleSubmit} title="Submit" />
+            <Button onPress={handleSubmit} title="Login" />
             {errors.general && (
               <Text style={styles.error}>{errors.general}</Text>
             )}
