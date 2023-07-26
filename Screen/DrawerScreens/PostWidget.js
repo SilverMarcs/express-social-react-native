@@ -84,7 +84,7 @@ const PostWidget = ({
         padding: 18,
         backgroundColor: theme.colors.surface,
         borderRadius: 12,
-        marginVertical: 9,
+        marginVertical: 8,
         marginHorizontal: 14,
       }}
     >
@@ -141,7 +141,7 @@ const PostWidget = ({
         <Image
           style={{
             width: "100%",
-            height: 200,
+            height: 200, // find a way to make this auto
             resizeMode: "cover",
             marginBottom: 10,
             borderRadius: 12,

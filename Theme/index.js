@@ -12,6 +12,7 @@ export const colorTokens = {
     500: "#666666",
     600: "#4D4D4D",
     700: "#333333",
+    770: "#171717",
     800: "#1A1A1A",
     900: "#0A0A0A",
     1000: "#000000",
@@ -40,27 +41,12 @@ export const themeSettings = (mode = "dark") => ({
     primary: colorTokens.primary[500],
     background: mode === "dark" ? colorTokens.grey[900] : colorTokens.grey[10],
     surface: mode === "dark" ? colorTokens.grey[800] : colorTokens.grey[50],
+    surfaceDarker:
+      mode === "dark" ? colorTokens.grey[770] : colorTokens.grey[100],
     textPrimary:
-      mode === "dark" ? colorTokens.grey[200] : colorTokens.grey[900],
+      mode === "dark" ? colorTokens.grey[100] : colorTokens.grey[900],
     textSecondary:
-      mode === "dark" ? colorTokens.grey[400] : colorTokens.grey[600],
+      mode === "dark" ? colorTokens.grey[300] : colorTokens.grey[600],
+    border: mode === "dark" ? colorTokens.grey[1000] : colorTokens.grey[300],
   },
-  // fonts: {
-  //   regular: {
-  //     fontFamily: "Rubik-Regular",
-  //     fontWeight: "400",
-  //   },
-  //   medium: {
-  //     fontFamily: "Rubik-Medium",
-  //     fontWeight: "500",
-  //   },
-  //   light: {
-  //     fontFamily: "Rubik-Light",
-  //     fontWeight: "300",
-  //   },
-  //   thin: {
-  //     fontFamily: "Rubik-Thin",
-  //     fontWeight: "100",
-  //   },
-  // },
 });

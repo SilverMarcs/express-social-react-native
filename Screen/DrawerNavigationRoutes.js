@@ -9,6 +9,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 
 // Import Screens
+import { useTheme } from "react-native-paper";
 import CustomSidebarMenu from "./Components/CustomSidebarMenu";
 import NavigationDrawerHeader from "./Components/NavigationDrawerHeader";
 import HomeScreen from "./DrawerScreens/HomeScreen";
@@ -18,6 +19,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const HomeScreenStack = ({ navigation }) => {
+  const theme = useTheme();
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
       <Stack.Screen
@@ -29,7 +31,7 @@ const HomeScreenStack = ({ navigation }) => {
             <NavigationDrawerHeader navigationProps={navigation} />
           ),
           headerStyle: {
-            backgroundColor: "#307ecc", //Set Header color
+            backgroundColor: theme.colors.background, //Set Header color
           },
           headerTintColor: "#fff", //Set Header text color
           headerTitleStyle: {

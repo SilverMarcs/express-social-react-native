@@ -18,9 +18,13 @@ import RegisterScreen from "./Screen/RegisterScreen";
 import { Provider } from "react-redux";
 
 import { PaperProvider } from "react-native-paper";
+// import TabNavigatorRoutes from "./Screen/TabNavigator.js";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import TabNavigator from "./Screen/TabNavigator.js";
 import { themeSettings } from "./Theme/index.js";
 
 const Stack = createStackNavigator();
+// const Tab = createBottomTabNavigator();
 
 const Auth = () => {
   // Stack Navigator for Login and Sign up Screen
@@ -55,14 +59,6 @@ const App = () => {
       <PaperProvider theme={themeSettings("dark")}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="LoginScreen">
-            {/* SplashScreen which will come once for 5 Seconds */}
-            {/* <Stack.Screen
-          name="SplashScreen"
-          component={SplashScreen}
-          // Hiding header for Splash Screen
-          options={{headerShown: false}}
-        /> */}
-            {/* Auth Navigator: Include Login and Signup */}
             <Stack.Screen
               name="Auth"
               component={Auth}
@@ -70,8 +66,8 @@ const App = () => {
             />
             {/* Navigation Drawer as a landing page */}
             <Stack.Screen
-              name="DrawerNavigationRoutes"
-              component={DrawerNavigationRoutes}
+              name="TabNavigator"
+              component={TabNavigator}
               // Hiding header for Navigation Drawer
               options={{ headerShown: false }}
             />

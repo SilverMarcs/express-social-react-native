@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
             token: loggedIn.token,
           })
         );
-        navigation.replace("DrawerNavigationRoutes");
+        navigation.replace("TabNavigator");
       } else {
         actions.setFieldError("general", "Incorrect email or password");
       }
