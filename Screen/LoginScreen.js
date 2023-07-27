@@ -1,6 +1,9 @@
+import { setBackgroundColorAsync } from "expo-navigation-bar";
+// import { StatusBar } from "expo-status-bar";
+import { setStatusBarStyle } from "expo-status-bar";
 import { Formik } from "formik";
-import { useState } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -15,7 +18,18 @@ const LoginSchema = Yup.object().shape({
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const mode = useSelector((state) => state.mode);
+
   const theme = useTheme();
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      setBackgroundColorAsync(theme.colors.background);
+    }
+  });
+
+  useEffect(() => {
+    setStatusBarStyle(mode === "dark" ? "light" : "dark");
+  });
 
   const handleSubmit = async (values, actions) => {
     const { email, password } = values;

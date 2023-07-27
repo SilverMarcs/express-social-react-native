@@ -1,10 +1,11 @@
 import React from "react";
 import { Text, View } from "react-native";
+import MyPostWidget from "../Components/MyPostWidget";
 
 const ProfileScreen = () => {
   return (
     <View>
-      <Text>This is a profile screen</Text>
+      <MyPostWidget />
     </View>
   );
 };

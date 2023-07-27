@@ -41,6 +41,8 @@ export const themeSettings = (mode = "dark") => ({
     primary: colorTokens.primary[500],
     background: mode === "dark" ? colorTokens.grey[900] : colorTokens.grey[10],
     surface: mode === "dark" ? colorTokens.grey[800] : colorTokens.grey[50],
+    surfaceLighter:
+      mode === "dark" ? colorTokens.grey[600] : colorTokens.grey[100],
     surfaceDarker:
       mode === "dark" ? colorTokens.grey[770] : colorTokens.grey[100],
     textPrimary:
