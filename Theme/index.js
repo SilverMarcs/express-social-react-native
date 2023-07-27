@@ -48,5 +48,6 @@ export const themeSettings = (mode = "dark") => ({
     textSecondary:
       mode === "dark" ? colorTokens.grey[300] : colorTokens.grey[600],
     border: mode === "dark" ? colorTokens.grey[1000] : colorTokens.grey[300],
+    error: mode === "dark" ? "#d73856" : "#B00020",
   },
 });

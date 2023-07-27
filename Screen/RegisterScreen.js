@@ -1,38 +1,29 @@
-import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
-import React, { useState } from "react";
-import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
-import * as Yup from "yup";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Button, TextInput, useTheme } from "react-native-paper";
+import { useDispatch } from "react-redux";
+import * as yup from "yup";
 
-const RegisterSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
+const RegisterSchema = yup.object().shape({
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
-  location: Yup.string().required("Location is required"),
-  occupation: Yup.string().required("Occupation is required"),
-  picture: Yup.string(),
+  location: yup.string().required("Location is required"),
+  occupation: yup.string().required("Occupation is required"),
+  picture: yup.string(),
 });
 
 const RegisterScreen = ({ navigation }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const dispatch = useDispatch();
+  const theme = useTheme();
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setSelectedImage(result.uri);
-    }
-  };
-
-  const register = async (values, onSubmitProps) => {
+  const handleSubmit = async (values, actions) => {
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
@@ -50,18 +41,21 @@ const RegisterScreen = ({ navigation }) => {
       }
     );
     const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
+    actions.resetForm(); // this is a func that Formik gives us to reset the form
 
     if (savedUser) {
-      alert("Registration successful. Log in to enter.");
       navigation.navigate("LoginScreen");
-    } else {
-      alert("Registration failed. Please try again.");
     }
   };
 
   return (
-    <View style={styles.container}>
+    // <SafeAreaView>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
+        Register
+      </Text>
       <Formik
         initialValues={{
           firstName: "",
@@ -70,10 +64,9 @@ const RegisterScreen = ({ navigation }) => {
           password: "",
           location: "",
           occupation: "",
-          picture: "",
         }}
         validationSchema={RegisterSchema}
-        onSubmit={register}
+        onSubmit={handleSubmit}
       >
         {({
           handleChange,
@@ -83,105 +76,144 @@ const RegisterScreen = ({ navigation }) => {
           errors,
           touched,
         }) => (
-          <View>
-            {errors.firstName && touched.firstName && (
-              <Text style={styles.error}>{errors.firstName}</Text>
-            )}
+          <View
+            style={{
+              marginBottom: 60,
+            }}
+          >
             <TextInput
+              label="First Name"
               onChangeText={handleChange("firstName")}
               onBlur={handleBlur("firstName")}
               value={values.firstName}
-              placeholder="First Name"
-              style={styles.input}
-              autoCapitalize="words"
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
+              autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.firstName) && Boolean(errors.firstName)}
             />
-            {errors.lastName && touched.lastName && (
-              <Text style={styles.error}>{errors.lastName}</Text>
+            {errors.firstName && touched.firstName && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.firstName}
+              </Text>
             )}
             <TextInput
+              label="Last Name"
               onChangeText={handleChange("lastName")}
               onBlur={handleBlur("lastName")}
               value={values.lastName}
-              placeholder="Last Name"
-              style={styles.input}
-              autoCapitalize="words"
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
+              autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.lastName) && Boolean(errors.lastName)}
             />
-            {errors.email && touched.email && (
-              <Text style={styles.error}>{errors.email}</Text>
+            {errors.lastName && touched.lastName && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.lastName}
+              </Text>
             )}
             <TextInput
+              label="Email"
               onChangeText={handleChange("email")}
               onBlur={handleBlur("email")}
               value={values.email}
-              placeholder="Email Address"
-              style={styles.input}
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
               autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.email) && Boolean(errors.email)}
             />
-            {errors.password && touched.password && (
-              <Text style={styles.error}>{errors.password}</Text>
+            {errors.email && touched.email && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.email}
+              </Text>
             )}
             <TextInput
+              label="Password"
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
-              placeholder="Password"
-              style={styles.input}
-              secureTextEntry
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              secureTextEntry={true}
+              error={Boolean(touched.password) && Boolean(errors.password)}
             />
-            {errors.location && touched.location && (
-              <Text style={styles.error}>{errors.location}</Text>
+            {errors.password && touched.password && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.password}
+              </Text>
             )}
             <TextInput
+              label="Location"
               onChangeText={handleChange("location")}
               onBlur={handleBlur("location")}
               value={values.location}
-              placeholder="Location"
-              style={styles.input}
-              autoCapitalize="words"
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
+              autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.location) && Boolean(errors.location)}
             />
-            {errors.occupation && touched.occupation && (
-              <Text style={styles.error}>{errors.occupation}</Text>
+            {errors.location && touched.location && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.location}
+              </Text>
             )}
             <TextInput
+              label="Occupation"
               onChangeText={handleChange("occupation")}
               onBlur={handleBlur("occupation")}
               value={values.occupation}
-              placeholder="Occupation"
-              style={styles.input}
-              autoCapitalize="words"
-              autoCompleteType="off"
-            />
-            {errors.picture && touched.picture && (
-              <Text style={styles.error}>{errors.picture}</Text>
-            )}
-            <TextInput
-              onChangeText={handleChange("picture")}
-              onBlur={handleBlur("picture")}
-              value={values.picture}
-              placeholder="Leave this empty for now"
-              style={styles.input}
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
               autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.occupation) && Boolean(errors.occupation)}
             />
-            <Button title="Pick an image from gallery" onPress={pickImage} />
-            {selectedImage && (
-              <Image
-                source={{ uri: selectedImage }}
-                style={{ width: 50, height: 50 }}
-              />
+            {errors.occupation && touched.occupation && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.occupation}
+              </Text>
             )}
-            {errors.picture && touched.picture && (
-              <Text style={styles.error}>{errors.picture}</Text>
+            <Button
+              mode="contained"
+              onPress={handleSubmit}
+              style={styles.button}
+              buttonColor={theme.colors.primary}
+              textColor={theme.colors.surface}
+            >
+              Register
+            </Button>
+            {errors.general && (
+              <Text
+                style={[styles.error, { color: theme.colors.textSecondary }]}
+              >
+                {errors.general}
+              </Text>
             )}
-            <Button onPress={handleSubmit} title="Register" />
+            <Text
+              style={[
+                styles.registerTextStyle,
+                { color: theme.colors.primary },
+              ]}
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
+              Already have an account? Login here
+            </Text>
           </View>
         )}
       </Formik>
     </View>
+    // </SafeAreaView>
   );
 };
 
@@ -190,17 +222,25 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     padding: 20,
+    justifyContent: "center",
   },
-  input: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 20,
-    padding: 10,
+  title: {
+    fontSize: 50,
+    fontWeight: "bold",
+    marginBottom: 30,
   },
   error: {
-    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  button: {
+    marginTop: 20,
+    borderRadius: 5,
+  },
+  registerTextStyle: {
+    fontSize: 16,
+    marginTop: 30,
+    marginLeft: 5,
   },
 });

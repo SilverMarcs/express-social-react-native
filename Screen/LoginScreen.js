@@ -1,24 +1,21 @@
 import { Formik } from "formik";
-import React from "react";
-import {
-  Button,
-  Keyboard,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { useState } from "react";
+import { Keyboard, StyleSheet, View } from "react-native";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { setLogin } from "../State";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().required("Required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
 });
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleSubmit = async (values, actions) => {
     const { email, password } = values;
@@ -32,28 +29,36 @@ const LoginScreen = ({ navigation }) => {
         }
       );
       const loggedIn = await loggedInResponse.json();
-      if (loggedIn && loggedIn.msg !== "User not found") {
+      if (
+        loggedIn &&
+        loggedIn.msg !== "Invalid credentials" &&
+        loggedIn.msg !== "User not found"
+      ) {
         dispatch(
-          // sending payload to the state. see reference
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
         );
+        // actions.resetForm();
         navigation.replace("TabNavigator");
       } else {
-        actions.setFieldError("general", "Incorrect email or password");
+        alert("Incorrect email or password");
       }
     } catch (error) {
       actions.setFieldError("general", error.message);
     } finally {
-      actions.setSubmitting(false);
       Keyboard.dismiss();
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
+        Login
+      </Text>
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
@@ -67,39 +72,68 @@ const LoginScreen = ({ navigation }) => {
           errors,
           touched,
         }) => (
-          <View>
-            {errors.email && touched.email && (
-              <Text style={styles.error}>{errors.email}</Text>
-            )}
+          <View
+            style={{
+              marginBottom: 60,
+            }}
+          >
             <TextInput
+              label="Email"
               onChangeText={handleChange("email")}
               onBlur={handleBlur("email")}
               value={values.email}
-              placeholder="Email Address"
-              style={styles.input}
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 10 }}
               autoCapitalize="none"
               autoCompleteType="off"
+              error={Boolean(touched.email) && Boolean(errors.email)}
             />
-            {errors.password && touched.password && (
-              <Text style={styles.error}>{errors.password}</Text>
+            {errors.email && touched.email && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.email}
+              </Text>
             )}
             <TextInput
+              label="Password"
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
-              placeholder="Password"
-              style={styles.input}
+              mode="outlined"
+              textColor={theme.colors.textPrimary}
+              style={{ marginBottom: 5 }}
+              error={Boolean(touched.password) && Boolean(errors.password)}
               secureTextEntry
             />
-            <Button onPress={handleSubmit} title="Login" />
+            {errors.password && touched.password && (
+              <Text style={[styles.error, { color: theme.colors.error }]}>
+                {errors.password}
+              </Text>
+            )}
+            <Button
+              mode="contained"
+              onPress={handleSubmit}
+              style={styles.button}
+              buttonColor={theme.colors.primary}
+              textColor={theme.colors.surface}
+            >
+              Login
+            </Button>
             {errors.general && (
-              <Text style={styles.error}>{errors.general}</Text>
+              <Text
+                style={[styles.error, { color: theme.colors.textSecondary }]}
+              >
+                {errors.general}
+              </Text>
             )}
             <Text
-              style={styles.registerTextStyle}
+              style={[
+                styles.registerTextStyle,
+                { color: theme.colors.primary },
+              ]}
               onPress={() => navigation.navigate("RegisterScreen")}
             >
-              New Here ? Register
+              Sign up here
             </Text>
           </View>
         )}
@@ -113,17 +147,25 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     padding: 20,
+    justifyContent: "center",
   },
-  input: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 20,
-    padding: 10,
+  title: {
+    fontSize: 50,
+    fontWeight: "bold",
+    marginBottom: 30,
   },
   error: {
-    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  button: {
+    marginTop: 30,
+    borderRadius: 5,
+  },
+  registerTextStyle: {
+    fontSize: 16,
+    marginTop: 30,
+    marginLeft: 5,
   },
 });
