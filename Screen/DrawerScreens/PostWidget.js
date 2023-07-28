@@ -84,7 +84,7 @@ const PostWidget = ({
         padding: 18,
         backgroundColor: theme.colors.surface,
         borderRadius: 12,
-        marginVertical: 8,
+        marginVertical: 8, // TODO: move to parent
         marginHorizontal: 14,
       }}
     >

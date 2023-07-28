@@ -15,8 +15,8 @@ const MyPostWidget = () => {
       style={{
         borderRadius: 10,
         padding: 10,
-        marginVertical: 5,
-        marginHorizontal: 10,
+        marginVertical: 16, //TODO: move to parent
+        marginHorizontal: 14,
         backgroundColor: theme.colors.surface,
       }}
     >
