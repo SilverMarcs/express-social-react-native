@@ -2,10 +2,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { PaperProvider } from "react-native-paper";
+import { useSelector } from "react-redux";
 import LoginScreen from "screens/LoginScreen";
 import RegisterScreen from "screens/RegisterScreen";
-// import { themeSettings } from "../theme";
-import { themeSettings } from "theme";
+import themeSettings from "theme";
 import TabNavigator from "./TabNavigator.js";
 
 const Stack = createStackNavigator();
@@ -29,8 +29,11 @@ const Auth = () => {
 };
 
 const RootNavigator = () => {
+  const mode = useSelector((state) => state.mode);
+  const isAuth = useSelector((state) => state.token);
+
   return (
-    <PaperProvider theme={themeSettings("dark")}>
+    <PaperProvider theme={themeSettings(mode)}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LoginScreen">
           <Stack.Screen

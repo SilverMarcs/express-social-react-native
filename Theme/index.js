@@ -31,7 +31,46 @@ export const colorTokens = {
   },
 };
 
-// Theme settings
+// const themeSettings = (mode) => {
+//   const lightTheme = {
+//     ...DefaultTheme,
+//     dark: false,
+//     colors: {
+//       ...DefaultTheme.colors,
+//       primary: colorTokens.primary[500],
+//       primaryDark: colorTokens.primary[700],
+//       primaryLight: colorTokens.primary[50],
+//       neutralDark: colorTokens.grey[700],
+//       neutralMain: colorTokens.grey[500],
+//       neutralMediumMain: colorTokens.grey[400],
+//       neutralMedium: colorTokens.grey[300],
+//       neutralLight: colorTokens.grey[50],
+//       background: colorTokens.grey[10],
+//       backgroundAlt: colorTokens.grey[0],
+//     },
+//   };
+
+//   const darkTheme = {
+//     ...DefaultTheme,
+//     dark: true,
+//     colors: {
+//       ...DefaultTheme.colors,
+//       primary: colorTokens.primary[500],
+//       primaryDark: colorTokens.primary[200],
+//       primaryLight: colorTokens.primary[800],
+//       neutralDark: colorTokens.grey[100],
+//       neutralMain: colorTokens.grey[200],
+//       neutralMediumMain: colorTokens.grey[300],
+//       neutralMedium: colorTokens.grey[400],
+//       neutralLight: colorTokens.grey[700],
+//       background: colorTokens.grey[900],
+//       backgroundAlt: colorTokens.grey[800],
+//     },
+//   };
+
+//   return mode === "dark" ? darkTheme : lightTheme;
+// };
+
 export const themeSettings = (mode = "dark") => ({
   ...DefaultTheme,
   dark: mode === "dark",
@@ -53,3 +92,5 @@ export const themeSettings = (mode = "dark") => ({
     error: mode === "dark" ? "#d73856" : "#B00020",
   },
 });
+
+export default themeSettings;
