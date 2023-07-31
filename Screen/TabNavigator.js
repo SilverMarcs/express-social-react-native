@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 function TabNavigator() {
   const theme = useTheme();
   useEffect(() => {
-    setBackgroundColorAsync(theme.colors.surface);
+    // setBackgroundColorAsync(theme.colors.surface);
   });
   return (
     <Tab.Navigator

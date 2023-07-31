@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { State } from "react-native-gesture-handler";
-// import HomeScreen from "../Screen/DrawerScreens/HomeScreen";
 
 // global states
 const initialState = {

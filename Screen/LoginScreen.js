@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
   useEffect(() => {
     if (Platform.OS === "android") {
-      setBackgroundColorAsync(theme.colors.background);
+      // setBackgroundColorAsync(theme.colors.background);
     }
   });
 
