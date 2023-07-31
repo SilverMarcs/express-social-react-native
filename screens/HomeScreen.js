@@ -1,4 +1,4 @@
-import AllPostsWidget from "./AllPostsWidget";
+import AllPostsWidget from "widgets/AllPostsWidget";
 
 const HomeScreen = () => {
   return <AllPostsWidget />;

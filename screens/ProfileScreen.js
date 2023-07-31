@@ -1,9 +1,13 @@
 import React from "react";
 import { Text, View } from "react-native";
-// import MyPostWidget from "../components/MyPostWidget";
+import NewPostWidget from "widgets/NewPostWidget";
 
 const ProfileScreen = () => {
-  return <View>{/* <MyPostWidget /> */}</View>;
+  return (
+    <View>
+      <NewPostWidget />
+    </View>
+  );
 };
 
 export default ProfileScreen;

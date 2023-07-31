@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const MyPostWidget = () => {
+const NewPostWidget = () => {
   const theme = useTheme();
   return (
     <View
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPostWidget;
+export default NewPostWidget;

@@ -1,10 +1,10 @@
-import MyPostWidget from "components/MyPostWidget";
 import { useEffect } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "store/reducers";
-import PostWidget from "./PostWidget";
+import NewPostWidget from "widgets/NewPostWidget";
+import PostWidget from "widgets/PostWidget";
 
 const AllPostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const AllPostsWidget = ({ userId, isProfile = false }) => {
       style={{ backgroundColor: theme.colors.background }}
     >
       {/* <SafeAreaView> */}
-      <MyPostWidget />
+      <NewPostWidget />
       {posts.map(
         ({
           _id,
