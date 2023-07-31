@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 import { Button, Divider, List, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { setLogout } from "../../State";
+import { setLogout } from "store/reducers";
 
 const SettingsScreen = ({ navigation }) => {
   const theme = useTheme();

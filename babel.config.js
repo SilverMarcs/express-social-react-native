@@ -14,6 +14,20 @@ module.exports = function (api) {
       "react-native-reanimated/plugin",
       ["module:react-native-dotenv"],
       "react-native-paper/babel",
+      [
+        "module-resolver",
+        {
+          root: ["./"],
+          alias: {
+            screens: "./screens",
+            components: "./components",
+            navigation: "./navigation",
+            theme: "./theme",
+            assets: "./assets",
+            store: "./store",
+          },
+        },
+      ],
     ],
   };
 };

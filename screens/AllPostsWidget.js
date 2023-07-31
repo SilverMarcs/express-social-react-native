@@ -1,9 +1,9 @@
+import MyPostWidget from "components/MyPostWidget";
 import { useEffect } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "../../State";
-import MyPostWidget from "../Components/MyPostWidget";
+import { setPosts } from "store/reducers";
 import PostWidget from "./PostWidget";
 
 const AllPostsWidget = ({ userId, isProfile = false }) => {

@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import React, { useEffect } from "react";
 import { IconButton, useTheme } from "react-native-paper";
-import HomeScreen from "./DrawerScreens/HomeScreen";
-import ProfileScreen from "./DrawerScreens/ProfileScreen";
-import SettingsScreen from "./DrawerScreens/SettingsScreen";
+import HomeScreen from "screens/HomeScreen";
+import ProfileScreen from "screens/ProfileScreen";
+import SettingsScreen from "screens/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
 

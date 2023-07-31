@@ -6,8 +6,8 @@ import { useEffect } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import { setLogin } from "store/reducers";
 import * as Yup from "yup";
-import { setLogin } from "../State";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),

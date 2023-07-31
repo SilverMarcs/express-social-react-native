@@ -19,7 +19,7 @@ import {
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "../../State";
+import { setPost } from "store/reducers";
 
 const PostWidget = ({
   postId,
