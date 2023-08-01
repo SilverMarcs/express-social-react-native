@@ -1,6 +1,6 @@
 import { Formik } from "formik";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Keyboard, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button, TextInput, useTheme } from "react-native-paper";
 import { useDispatch } from "react-redux";
@@ -22,29 +22,43 @@ const RegisterSchema = yup.object().shape({
 const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleSubmit = async (values, actions) => {
+    setIsRegistering(true);
     const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append(
-      "picturePath",
-      values.picture ? values.picture.name : "empty.jpeg"
-    );
-
-    const savedUserResponse = await fetch(
-      `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
-      {
-        method: "POST",
-        body: formData,
+    try {
+      for (let value in values) {
+        formData.append(value, values[value]);
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    actions.resetForm(); // this is a func that Formik gives us to reset the form
+      formData.append(
+        "picturePath",
+        values.picture ? values.picture.name : "empty.jpeg"
+      );
 
-    if (savedUser) {
-      navigation.navigate("LoginScreen");
+      const savedUserResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      actions.resetForm();
+
+      if (savedUser) {
+        navigation.navigate("LoginScreen");
+      } else {
+        alert("Incorrect details");
+      }
+    } catch (error) {
+      actions.resetForm();
+      setIsRegistering(false);
+      actions.setFieldError("general", error.message);
+    } finally {
+      actions.resetForm();
+      setIsRegistering(false);
+      Keyboard.dismiss();
     }
   };
 
@@ -186,6 +200,7 @@ const RegisterScreen = ({ navigation }) => {
             )}
             <Button
               mode="contained"
+              loading={isRegistering}
               onPress={handleSubmit}
               style={styles.button}
               buttonColor={theme.colors.primary}

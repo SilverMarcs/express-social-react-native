@@ -2,9 +2,10 @@ import { setBackgroundColorAsync } from "expo-navigation-bar";
 // import { StatusBar } from "expo-status-bar";
 import { setStatusBarStyle } from "expo-status-bar";
 import { Formik } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { set } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "store/reducers";
 import * as Yup from "yup";
@@ -19,6 +20,7 @@ const LoginSchema = Yup.object().shape({
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.mode);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const theme = useTheme();
   useEffect(() => {
@@ -32,6 +34,7 @@ const LoginScreen = ({ navigation }) => {
   });
 
   const handleSubmit = async (values, actions) => {
+    setIsLoggingIn(true);
     const { email, password } = values;
     try {
       const loggedInResponse = await fetch(
@@ -54,14 +57,17 @@ const LoginScreen = ({ navigation }) => {
             token: loggedIn.token,
           })
         );
+        setIsLoggingIn(false);
         // actions.resetForm();
         navigation.replace("TabNavigator");
       } else {
         alert("Incorrect email or password");
       }
     } catch (error) {
+      setIsLoggingIn(false);
       actions.setFieldError("general", error.message);
     } finally {
+      setIsLoggingIn(false);
       Keyboard.dismiss();
     }
   };
@@ -126,6 +132,7 @@ const LoginScreen = ({ navigation }) => {
             )}
             <Button
               mode="contained"
+              loading={isLoggingIn}
               onPress={handleSubmit}
               style={styles.button}
               buttonColor={theme.colors.primary}

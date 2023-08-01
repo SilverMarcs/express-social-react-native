@@ -7,6 +7,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { set } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "store/reducers";
 
@@ -20,24 +21,34 @@ const NewPostWidget = () => {
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
 
-  const handlePost = async () => {
-    const formData = new FormData();
-    formData.append("userId", _id);
-    formData.append("description", post);
-    if (image) {
-      formData.append("picture", image);
-    }
+  const [isPosting, setIsPosting] = useState(false);
 
-    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    // setIsImage(false);
-    setPost("");
+  const handlePost = async () => {
+    setIsPosting(true);
+    try {
+      const formData = new FormData();
+      formData.append("userId", _id);
+      formData.append("description", post);
+      if (image) {
+        formData.append("picture", image);
+      }
+
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const posts = await response.json();
+      dispatch(setPosts({ posts }));
+      setIsPosting(false);
+      setImage(null);
+      // setIsImage(false);
+      setPost("");
+    } catch (error) {
+      setIsPosting(false);
+      alert("An error ocurrer while posting");
+      Keyboard.dismiss();
+    }
   };
 
   return (
@@ -67,6 +78,7 @@ const NewPostWidget = () => {
         />
         <Button
           onPress={handlePost}
+          loading={isPosting}
           mode="contained"
           disabled={!post}
           style={post ? styles.postButton : styles.postButtonDisabled}
