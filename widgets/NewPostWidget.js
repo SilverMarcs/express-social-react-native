@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Image, Keyboard, StyleSheet, Text, View } from "react-native";
 import {
   Button,
   Divider,
@@ -7,43 +7,56 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "store/reducers";
 
 const NewPostWidget = () => {
   const theme = useTheme();
-  return (
-    <View
-      style={{
-        borderRadius: 10,
-        padding: 10,
-        marginVertical: 16, //TODO: move to parent
-        marginHorizontal: 14,
-        backgroundColor: theme.colors.surface,
-      }}
-    >
-      <View style={styles.cardHeader}>
-        <Image
-          style={styles.userImage}
-          source={{ uri: "https://via.placeholder.com/50" }}
-        />
-        <TextInput
-          placeholder="What's on your mind..."
-          placeholderTextColor={theme.colors.surfaceLighter}
-          //   value={post}
-          //   onChangeText={setPost}
-          mode="outlined"
-          textColor={theme.colors.textPrimary}
-          style={{
-            flex: 1,
-            backgroundColor: "#333333",
-            padding: 10,
-          }}
-          outlineStyle={{ borderRadius: 10 }}
-          activeOutlineColor={theme.colors.surfaceDarker}
-        />
-      </View>
+  const styles = getStyles(theme);
+  // const [isImage, setIsImage] = useState(false);
+  const [image, setImage] = useState(null);
+  const [post, setPost] = useState("");
+  const dispatch = useDispatch();
+  const { _id } = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token);
 
-      {/* <View style={styles.cardDivider} /> */}
-      <Divider style={{ marginVertical: 10 }} />
+  const handlePost = async () => {
+    const formData = new FormData();
+    formData.append("userId", _id);
+    formData.append("description", post);
+    if (image) {
+      formData.append("picture", image);
+    }
+
+    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+    const posts = await response.json();
+    dispatch(setPosts({ posts }));
+    setImage(null);
+    // setIsImage(false);
+    setPost("");
+  };
+
+  return (
+    <View style={styles.card}>
+      <TextInput
+        placeholder="What's on your mind..."
+        multiline={true}
+        placeholderTextColor={theme.colors.surfaceLighter}
+        selectionColor={theme.colors.primary}
+        outlineColor={theme.colors.surfaceDarker}
+        value={post}
+        // onBlur={() => Keyboard.dismiss()}
+        onChangeText={setPost}
+        mode="outlined"
+        textColor={theme.colors.textPrimary}
+        style={styles.textInput}
+        outlineStyle={styles.textInputOutline}
+        // activeOutlineColor={theme.colors.surfaceDarker}
+      />
 
       <View style={styles.cardFooter}>
         <IconButton icon="image-outline" iconColor={theme.colors.textPrimary} />
@@ -52,8 +65,15 @@ const NewPostWidget = () => {
           icon="microphone-outline"
           iconColor={theme.colors.textPrimary}
         />
-
-        <Button mode="contained" style={styles.postButton}>
+        <Button
+          onPress={handlePost}
+          mode="contained"
+          disabled={!post}
+          style={post ? styles.postButton : styles.postButtonDisabled}
+          labelStyle={
+            post ? styles.postButtonText : styles.postButtonDisabledText
+          }
+        >
           POST
         </Button>
       </View>
@@ -61,50 +81,43 @@ const NewPostWidget = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    // backgroundColor: "#f00",
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 5,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  cardDivider: {
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    width: "100%",
-    marginVertical: 10,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  iconButton: {
-    // padding: 10,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    card: {
+      borderRadius: 10,
+      padding: 10,
+      marginVertical: 16,
+      marginHorizontal: 14,
+      backgroundColor: theme.colors.surface,
+    },
+    textInput: {
+      backgroundColor: theme.colors.surface2,
+      padding: 9,
+      marginBottom: 10,
+      marginHorizontal: 10,
+    },
+    textInputOutline: {
+      borderRadius: 10,
+    },
+    cardFooter: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginHorizontal: 10,
+    },
+    postButton: {
+      backgroundColor: theme.colors.primary,
+      color: "red",
+    },
+    postButtonText: {
+      color: theme.colors.neutral,
+    },
+    postButtonDisabled: {
+      backgroundColor: theme.colors.surface2,
+    },
+    postButtonDisabledText: {
+      color: theme.colors.textSecondary,
+    },
+  });
 
 export default NewPostWidget;
