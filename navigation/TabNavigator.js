@@ -48,6 +48,28 @@ function TabNavigator() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
+        headerRight: () => (
+          <IconButton
+            icon="message-outline"
+            iconColor={theme.colors.textPrimary}
+            size={23}
+            onPress={() => {
+              // TODO
+            }}
+            style={{ marginRight: 10 }}
+          />
+        ),
+        headerLeft: () => (
+          <IconButton
+            icon="account-outline"
+            iconColor={theme.colors.textPrimary}
+            size={25}
+            onPress={() => {
+              // TODO
+            }}
+            style={{ marginLeft: 10 }}
+          />
+        ),
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
