@@ -14,6 +14,7 @@ export const colorTokens = {
     700: "#333333",
     770: "#171717",
     800: "#1A1A1A",
+    850: "#222222",
     900: "#0A0A0A",
     1000: "#000000",
   },
@@ -80,6 +81,7 @@ export const themeSettings = (mode = "dark") => ({
     primary: colorTokens.primary[500],
     background: mode === "dark" ? colorTokens.grey[900] : colorTokens.grey[10],
     surface: mode === "dark" ? colorTokens.grey[800] : colorTokens.grey[50],
+    surface2: mode === "dark" ? colorTokens.grey[850] : colorTokens.grey[100],
     surfaceLighter:
       mode === "dark" ? colorTokens.grey[600] : colorTokens.grey[100],
     surfaceDarker:
@@ -89,6 +91,7 @@ export const themeSettings = (mode = "dark") => ({
     textSecondary:
       mode === "dark" ? colorTokens.grey[300] : colorTokens.grey[600],
     border: mode === "dark" ? colorTokens.grey[1000] : colorTokens.grey[300],
+    neutral: mode === "dark" ? colorTokens.grey[700] : colorTokens.grey[100],
     error: mode === "dark" ? "#d73856" : "#B00020",
   },
 });
