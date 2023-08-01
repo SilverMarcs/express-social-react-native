@@ -4,7 +4,6 @@ import {
   Share,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -12,8 +11,10 @@ import {
   Avatar,
   Button,
   Card,
+  Divider,
   IconButton,
   Surface,
+  TextInput,
   // Text,
   useTheme,
 } from "react-native-paper";
@@ -40,6 +41,7 @@ const PostWidget = ({
   const likeCount = Object.keys(likes).length;
   const [commentBoxText, setCommentBoxText] = useState("");
   const theme = useTheme();
+  const styles = getStyles(theme);
 
   const patchLike = async () => {
     const response = await fetch(
@@ -58,6 +60,10 @@ const PostWidget = ({
   };
 
   const handleComment = async () => {
+    if (!commentBoxText) {
+      return;
+    }
+
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_API_URL}/posts/${postId}/comments`,
       {
@@ -130,6 +136,7 @@ const PostWidget = ({
         style={{
           color: theme.colors.textPrimary,
           marginVertical: 16,
+          marginStart: 3,
           fontSize: 15.5,
         }}
       >
@@ -162,6 +169,7 @@ const PostWidget = ({
           onPress={patchLike}
           style={{
             marginVertical: -4,
+            marginStart: -3,
           }}
           size={22}
         ></IconButton>
@@ -211,14 +219,14 @@ const PostWidget = ({
       </View>
       {isComments && (
         <View style={styles.commentSection}>
+          {/* <Divider style={{ width: "50%", alignSelf: "center" }} /> */}
+          {/* <Divider /> */}
           {comments.map((comment, i) => (
             <View key={`${name}-${i}`} style={styles.commentContainer}>
               <Image
                 style={styles.commenterPicture}
                 source={{
-                  uri:
-                    `${process.env.EXPO_PUBLIC_API_URL}/assets/${comment.userPicturePath}` ??
-                    `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
+                  uri: comment.userPicturePath,
                 }}
               />
               <View style={styles.commentText}>
@@ -229,125 +237,136 @@ const PostWidget = ({
               </View>
             </View>
           ))}
-          <TextInput
-            style={styles.commentBox}
-            placeholder="Write a comment"
-            onChangeText={(text) => setCommentBoxText(text)}
-            value={commentBoxText}
-          />
-          <TouchableOpacity
-            style={styles.postButton}
-            onPress={handleComment}
-            disabled={!commentBoxText}
-          >
-            <Text style={styles.postButtonText}>Post Comment</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row" }}>
+            <TextInput
+              style={{
+                ...styles.commentBox,
+                flexGrow: 1,
+              }}
+              mode="outlined"
+              outlineColor={theme.colors.surface2}
+              textColor={theme.colors.textPrimary}
+              placeholderTextColor={theme.colors.surfaceLighter}
+              placeholder="Write a comment"
+              onChangeText={(text) => setCommentBoxText(text)}
+              value={commentBoxText}
+            />
+            <IconButton
+              icon="send"
+              iconColor={theme.colors.textSecondary}
+              // disabled={!commentBoxText}
+              style={{
+                // color: theme.colors.primary,
+                marginTop: 10,
+                marginRight: 0,
+              }}
+              onPress={handleComment}
+            ></IconButton>
+          </View>
         </View>
       )}
     </Card>
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+const getStyles = (theme) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: "#fff",
+      borderRadius: 10,
+      padding: 10,
+      marginVertical: 10,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userPicture: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  headerText: {
-    flex: 1,
-  },
-  name: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  location: {
-    color: "#666",
-  },
-  description: {
-    marginVertical: 10,
-  },
-  picture: {
-    width: "100%",
-    height: 200,
-    resizeMode: "cover",
-    marginBottom: 10,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  like: {
-    marginRight: 10,
-  },
-  likeCount: {
-    marginRight: 20,
-  },
-  comment: {
-    marginRight: 10,
-  },
-  commentCount: {
-    marginRight: 20,
-  },
-  commentSection: {
-    marginTop: 10,
-  },
-  commentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  commenterPicture: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 10,
-  },
-  commentText: {
-    flex: 1,
-  },
-  commenterName: {
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  commentContent: {
-    color: "#666",
-  },
-  commentBox: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 5,
-    marginBottom: 10,
-  },
-  postButton: {
-    backgroundColor: "#007AFF",
-    borderRadius: 5,
-    padding: 10,
-    alignItems: "center",
-  },
-  postButtonText: {
-    color: "#fff",
-  },
-});
+    cardHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    userPicture: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginRight: 10,
+    },
+    headerText: {
+      flex: 1,
+    },
+    name: {
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    location: {
+      color: "#666",
+    },
+    description: {
+      marginVertical: 10,
+    },
+    picture: {
+      width: "100%",
+      height: 200,
+      resizeMode: "cover",
+      marginBottom: 10,
+    },
+    cardFooter: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    like: {
+      marginRight: 10,
+    },
+    likeCount: {
+      marginRight: 20,
+    },
+    comment: {
+      marginRight: 10,
+    },
+    commentCount: {
+      marginRight: 20,
+    },
+    commentSection: {
+      marginTop: 10,
+    },
+    commentContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginVertical: 10,
+    },
+    commenterPicture: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      marginRight: 10,
+    },
+    commentText: {
+      flex: 1,
+    },
+    commenterName: {
+      color: theme.colors.textPrimary,
+      fontWeight: "bold",
+      fontSize: 14,
+    },
+    commentContent: {
+      color: theme.colors.textSecondary,
+    },
+    commentBox: {
+      backgroundColor: theme.colors.surface2,
+    },
+    postButton: {
+      backgroundColor: "#007AFF",
+      borderRadius: 5,
+      // padding: 10,
+      alignItems: "center",
+    },
+    postButtonText: {
+      color: "#fff",
+    },
+  });
 
 export default PostWidget;

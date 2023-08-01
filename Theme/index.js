@@ -78,7 +78,9 @@ export const themeSettings = (mode = "dark") => ({
   roundness: 4,
   colors: {
     ...DefaultTheme.colors,
-    primary: colorTokens.primary[500],
+    // primary: colorTokens.primary[500],
+    primary:
+      mode === "dark" ? colorTokens.primary[500] : colorTokens.primary[500],
     background: mode === "dark" ? colorTokens.grey[900] : colorTokens.grey[10],
     surface: mode === "dark" ? colorTokens.grey[800] : colorTokens.grey[50],
     surface2: mode === "dark" ? colorTokens.grey[850] : colorTokens.grey[100],
