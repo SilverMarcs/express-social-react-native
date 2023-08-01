@@ -97,9 +97,7 @@ const PostWidget = ({
             marginRight: 13,
           }}
           source={{
-            uri:
-              `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
-              `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
+            uri: userPicturePath,
           }}
         />
         <View
@@ -147,9 +145,7 @@ const PostWidget = ({
             borderRadius: 12,
           }}
           source={{
-            uri:
-              `${process.env.EXPO_PUBLIC_API_URL}/assets/${picturePath}` ??
-              `${process.env.EXPO_PUBLIC_API_URL}/assets/empty.jpeg`,
+            uri: picturePath,
           }}
         />
       )}
