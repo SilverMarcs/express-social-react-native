@@ -7,7 +7,6 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-import { set } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "store/reducers";
 
@@ -71,10 +70,10 @@ const NewPostWidget = () => {
 
       <View style={styles.cardFooter}>
         <IconButton icon="image-outline" iconColor={theme.colors.textPrimary} />
-        <IconButton icon="attachment" iconColor={theme.colors.textPrimary} />
+        <IconButton icon="attachment" iconColor={theme.colors.textSecondary} />
         <IconButton
           icon="microphone-outline"
-          iconColor={theme.colors.textPrimary}
+          iconColor={theme.colors.textSecondary}
         />
         <Button
           onPress={handlePost}
