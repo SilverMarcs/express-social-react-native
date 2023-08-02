@@ -18,9 +18,9 @@ import {
   // Text,
   useTheme,
 } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "store/reducers";
+import User from "../components/User";
 
 const PostWidget = ({
   postId,
@@ -94,44 +94,12 @@ const PostWidget = ({
         marginHorizontal: 14,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
-          style={{
-            width: 55,
-            height: 55,
-            borderRadius: 27.5,
-            marginRight: 13,
-          }}
-          source={{
-            uri: userPicturePath,
-          }}
-        />
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 19,
-              marginBottom: 5,
-              marginTop: -5,
-              color: theme.colors.textPrimary,
-            }}
-          >
-            {name}
-          </Text>
-          <Text
-            style={{
-              color: theme.colors.textSecondary,
-              fontSize: 14,
-            }}
-          >
-            {location}
-          </Text>
-        </View>
-      </View>
+      <User
+        userId={postUserId}
+        name={name}
+        subtitle={location}
+        userPicturePath={userPicturePath}
+      />
       <Text
         style={{
           color: theme.colors.textPrimary,
