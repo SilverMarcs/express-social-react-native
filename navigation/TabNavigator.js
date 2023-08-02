@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import React, { useEffect } from "react";
-import { IconButton, useTheme } from "react-native-paper";
+import { Avatar, Button, IconButton, useTheme } from "react-native-paper";
+import { useSelector } from "react-redux";
 import FriendListScreen from "screens/FriendListScreen";
 import HomeScreen from "screens/HomeScreen";
 import ProfileScreen from "screens/ProfileScreen";
@@ -11,9 +12,12 @@ const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
   const theme = useTheme();
+  const { picturePath } = useSelector((state) => state.user);
+
   useEffect(() => {
     // setBackgroundColorAsync(theme.colors.surface);
   });
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -59,22 +63,21 @@ function TabNavigator() {
           <IconButton
             icon="message-outline"
             iconColor={theme.colors.textPrimary}
-            size={23}
-            onPress={() => {
-              // TODO
-            }}
-            style={{ marginRight: 10 }}
-          />
-        ),
-        headerLeft: () => (
-          <IconButton
-            icon="account-outline"
-            iconColor={theme.colors.textPrimary}
             size={25}
             onPress={() => {
               // TODO
             }}
-            style={{ marginLeft: 10 }}
+            style={{ marginRight: 12 }}
+          />
+        ),
+        headerLeft: () => (
+          <Avatar.Image
+            size={30}
+            source={{ uri: picturePath }}
+            style={{ marginLeft: 12 }}
+            onPress={() => {
+              // TODO
+            }}
           />
         ),
       })}
