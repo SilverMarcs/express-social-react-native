@@ -1,11 +1,14 @@
 import React from "react";
-import { Text, View } from "react-native";
-import NewPostWidget from "widgets/NewPostWidget";
+import { View } from "react-native";
+import { useSelector } from "react-redux";
+import FriendListWidget from "widgets/FriendListWidget";
 
 const ProfileScreen = () => {
+  const { _id } = useSelector((state) => state.user);
+
   return (
     <View>
-      <NewPostWidget />
+      <FriendListWidget _id={_id} />
     </View>
   );
 };

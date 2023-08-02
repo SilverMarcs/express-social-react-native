@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +6,11 @@ import { setFriends } from "store/reducers";
 const User = ({ userId, name, subtitle, userPicturePath }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-
   const token = useSelector((state) => state.token);
+
   const friends = useSelector((state) => state.user.friends);
   const { _id } = useSelector((state) => state.user); // logged in user
   const isFriend = friends.find((friend) => friend._id === userId);
-
   const isSelf = _id === userId;
 
   const patchFriend = async () => {
@@ -72,7 +70,7 @@ const User = ({ userId, name, subtitle, userPicturePath }) => {
           {subtitle}
         </Text>
       </View>
-      {isSelf ? null : (
+      {!isSelf && (
         <IconButton
           animated={true}
           mode="contained-tonal"
@@ -80,6 +78,7 @@ const User = ({ userId, name, subtitle, userPicturePath }) => {
           containerColor={theme.colors.primaryLight}
           onPress={patchFriend}
           icon={isFriend ? "account-minus-outline" : "account-plus-outline"}
+          // icon="cog-outline"
         />
       )}
     </View>

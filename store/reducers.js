@@ -26,12 +26,7 @@ export const authSlice = createSlice({
       state.token = null;
     },
     setFriends: (state, action) => {
-      if (state.user) {
-        state.user.friends = action.payload.friends;
-      } else {
-        // console.error("User friends not found");
-        state.user.friends = [];
-      }
+      state.user.friends = action.payload.friends;
     },
     setPosts: (state, action) => {
       state.posts = action.payload.posts.reverse();
