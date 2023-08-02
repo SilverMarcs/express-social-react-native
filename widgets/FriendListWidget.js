@@ -31,18 +31,24 @@ const FriendListWidget = ({ _id }) => {
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.surface }}>
-      <Text color={theme.colors.textPrimary}>Friend List</Text>
+    <View
+      style={{
+        backgroundColor: theme.colors.surface,
+        padding: 16,
+        // borderRadius: 10,
+      }}
+    >
       {!isLoading && friends && friends.length > 0 ? (
-        <View>
+        <View style={{ marginTop: 16 }}>
           {friends.map((friend) => (
-            <User
-              key={friend._id}
-              userId={friend._id}
-              name={`${friend.firstName} ${friend.lastName}`}
-              subtitle={friend.occupation}
-              userPicturePath={friend.picturePath}
-            />
+            <View key={friend._id} style={{ marginBottom: 16 }}>
+              <User
+                userId={friend._id}
+                name={`${friend.firstName} ${friend.lastName}`}
+                subtitle={friend.occupation}
+                userPicturePath={friend.picturePath}
+              />
+            </View>
           ))}
         </View>
       ) : (

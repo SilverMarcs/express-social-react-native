@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import React, { useEffect } from "react";
 import { IconButton, useTheme } from "react-native-paper";
+import FriendListScreen from "screens/FriendListScreen";
 import HomeScreen from "screens/HomeScreen";
 import ProfileScreen from "screens/ProfileScreen";
 import SettingsScreen from "screens/SettingsScreen";
@@ -21,10 +22,16 @@ function TabNavigator() {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Settings") {
+          } else if (route.name === "Friends") {
+            iconName = focused
+              ? "account-multiple"
+              : "account-multiple-outline";
+          }
+          //  else if (route.name === "Profile") {
+          //   iconName = focused ? "account" : "account-outline";
+          // }
+          else if (route.name === "Settings") {
             iconName = focused ? "cog" : "cog-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "account" : "account-outline";
           }
 
           // Set the icon color based on whether it is focused or not
@@ -73,8 +80,9 @@ function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Friends" component={FriendListScreen} />
+      {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
       <Tab.Screen name="Settings" component={SettingsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
