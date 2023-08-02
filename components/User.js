@@ -15,18 +15,6 @@ const User = ({ userId, name, subtitle, userPicturePath }) => {
 
   const isSelf = _id === userId;
 
-  const [icon, setIcon] = useState(
-    isFriend ? "account-minus-outline" : "account-plus-outline"
-  );
-
-  useEffect(() => {
-    setIcon(isFriend ? "account-minus-outline" : "account-plus-outline");
-  }, [isFriend]);
-
-  if (isSelf) {
-    return null;
-  }
-
   const patchFriend = async () => {
     try {
       const response = await fetch(
@@ -91,7 +79,7 @@ const User = ({ userId, name, subtitle, userPicturePath }) => {
           iconColor={theme.colors.primaryDark}
           containerColor={theme.colors.primaryLight}
           onPress={patchFriend}
-          icon={icon}
+          icon={isFriend ? "account-minus-outline" : "account-plus-outline"}
         />
       )}
     </View>
